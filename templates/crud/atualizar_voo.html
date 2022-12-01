@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block title %}Atualizar Voos{% endblock title %}
+
+{% block content %}
+
+<header class="bg-primary bg-gradient text-white">
+    <div class="container">
+            <h1>Voos</h1>
+    </div>
+</header>
+
+    {% comment %} <div class="input-group mb-3">
+        <input type="text" class="form-control" placeholder="Código da voo" aria-label="Recipient's username" aria-describedby="basic-addon2">
+        <div class="input-group-append">
+          <button class="btn btn-outline-secondary" type="button">Buscar voo</button>
+        </div>
+    </div> {% endcomment %}
+    {% for voo in object_list %}
+        <a href="{% url 'voo-update-form' voo.id %}">{{ voo.id }}</a>
+        <br/>
+    {% endfor %}
+    {% comment %} <ul>
+        {% for voo in object_list %}
+            <li>{{ voo.codigo }}</li>
+        {% endfor %}
+    </ul> {% endcomment %}
+
+
+{% endblock %}

@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <form action="" method="post">
+    {% csrf_token %}
+    <table>
+      {{ form.as_table }}
+    </table>
+    <input type="submit" value="Submit" />
+  </form>
+
+  <!-- Footer-->
+<footer class="py-5 bg-dark fixed-bottom">
+  <div class="container px-4"><p class="m-0 text-center text-white">MonitoraVoos</p></div>
+</footer>
+{% endblock %}

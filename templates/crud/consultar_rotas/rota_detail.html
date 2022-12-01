@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block title %} Rota {{rota.codigo}} {% endblock %}
+
+{% block content %}
+    <h1>Rota: {{ rota.codigo }}</h1>
+
+    <p><strong>Companhia aerea:</strong> <a href="">{{ rota.companhia_aerea }}</a></p> <!-- author detail link not yet defined -->
+    <p><strong>Origem:</strong> {{ rota.origem }}</p>
+    <p><strong>Aeroporto de partida:</strong> {{ rota.aeroporto_partida }}</p>
+    <p><strong>Horário de partida:</strong> {{ rota.hora_partida_prevista }}</p>
+    <p><strong>Destino:</strong> {{ rota.destino }}</p>
+    <p><strong>Aeroporto de destino:</strong> {{ rota.aeroporto_chegada }}</p>
+    <p><strong>Horário de chegada:</strong> {{ rota.hora_chegada_prevista }}</p>
+
+    <!-- Footer-->
+    <footer class="py-5 bg-dark fixed-bottom">
+        <div class="container px-4"><p class="m-0 text-center text-white">MonitoraVoos</p></div>
+    </footer>
+    
+{% endblock %}

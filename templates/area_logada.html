@@ -1,0 +1,154 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+    <title>Área logada</title>
+    <link rel="shortcut icon" href="#">
+    <!-- Core theme CSS (includes Bootstrap)-->
+    <link href="{% static 'css/styles.css' %}" rel="stylesheet" />
+</head>
+
+
+<body id="page-top">
+    <!-- Navigation-->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top" id="mainNav">
+        <div class="container">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
+            <div class="collapse navbar-collapse" id="navbarResponsive">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item active">
+                        <a class="nav-link" href={% url 'home'%}>Home</a>
+                    </li>
+                    {%if user.is_authenticated %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'logout' %}">Log Out</a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <!-- Header-->
+    {%block content%}
+    <header class="bg-primary bg-gradient text-white">
+        <div class="container">
+            <div class="jumbotron">
+                <h1>Bem vindo ao sistema de monitoramento de voos! <i class="fas fa-globe-americas"></i></h1>
+                <hr class="my-4">
+                {%if user.is_authenticated %}
+                    <div class="row">
+                        <div class="col">
+                            {% if perms.rota.change_rota %}
+                                <a class="btn btn-light btn-lg" href="/crud" role="button">Gerenciar Voos</a>
+                            {% else %}
+                                <button disabled class="btn btn-light btn-lg" role="button">Gerenciar Voos</button>
+                            {% endif %}
+                        </div>
+                        <div class="col">
+                            {% if perms.rota.change_voo %}
+                                <a class="btn btn-light btn-lg" href="/monitoramento" role="button">Monitorar Voos</a>
+                            {% else %}
+                                <button disabled class="btn btn-light btn-lg" href="/monitoramento" role="button">Monitorar Voos</button>
+                            {% endif %}
+                        </div>
+                        <div class="col">
+                            {% if perms.rota.view_voo %}
+                                <a class="btn btn-light btn-lg" href="/geracao-relatorios" role="button">Gerar Relatórios</a>
+                            {% else %}
+                                <button disabled class="btn btn-light btn-lg" href="/geracao-relatorios" role="button">Gerar Relatórios</button>
+                            {% endif %}
+                        </div>
+                    </div>
+                {% else %}
+                    <p>Você não está logado</p>
+                    <a href="{% url 'login' %}" class="btn btn-light" role="button">Login</a>
+                {% endif%}
+            </div>
+        </div>
+    </header>
+    {%if user.is_authenticated %}
+    <section id="Voos">
+        <h2 style="text-align:center">Painel de Monitoração</h2>
+        <div class="container" style="margin-top:25px">
+            <h3 style="text-align:center">Aeroporto Internacional de Guarulhos (GRU) - Partidas</h3>
+            <table class="table">
+            <thead>
+              <tr>
+                <th scope="col">Companhia aérea</th>
+                <th scope="col">Voo</th>
+                <th scope="col">Status</th>
+                <th scope="col">Destino</th>
+                <th scope="col">Aeroporto</th>
+                <th scope="col">Partida Prevista</th>
+                <th scope="col">Partida Real</th>
+              </tr>
+            </thead>
+            <tbody>
+                {% for voo in voos %}
+                {% if voo.rota.aeroporto_partida == 'Guarulhos' %}
+                    <tr>
+                        <td>{{ voo.rota.companhia_aerea }}</td>
+                        <td>{{ voo.id }}</td>
+                        <td>{{ voo.get_status_display }}</td>
+                        <td>{{ voo.rota.destino }}</td>
+                        <td>{{ voo.rota.aeroporto_chegada }}</td>
+                        <td>{{ voo.rota.hora_partida_prevista }}</td>
+                        <td>{{ voo.hora_partida }}</td>
+                    </tr>
+                {% endif %}
+                {% endfor %}
+            </tbody>
+          </table>
+        </div>
+
+        <div class="container" style="margin-top:50px">
+            <h3 style="text-align:center">Aeroporto Internacional de Guarulhos (GRU) - Chegadas</h3>
+            <table class="table">
+            <thead>
+              <tr>
+                <th scope="col">Companhia aérea</th>
+                <th scope="col">Voo</th>
+                <th scope="col">Status</th>
+            	<th scope="col">Origem</th>
+               <th scope="col">Aeroporto</th>
+                {% comment %} <th scope="col">Origem</th> {% endcomment %}
+                <th scope="col">Chegada Prevista</th>
+                <th scope="col">Chegada Real</th>
+              </tr>
+            </thead>
+            <tbody>
+                {% for voo in voos %}
+                {% if voo.rota.aeroporto_partida != 'Guarulhos' %}
+                <tr>
+                    <td>{{ voo.rota.companhia_aerea }}</td>
+                    <td>{{ voo.id }}</td>
+                    <td>{{ voo.get_status_display }}</td>
+                    <td>{{ voo.rota.origem }}</td>
+                	<td>{{ voo.rota.aeroporto_partida }}</td>
+                    <td>{{ voo.rota.hora_chegada_prevista }}</td>
+                    <td>{{ voo.hora_chegada }}</td>
+                </tr>
+                {% endif %}
+                {% endfor %}
+            </tbody>
+          </table>
+        </div>
+    </section>
+    {% endif%}
+    {% endblock content %}
+    <!-- Footer-->
+    <footer class="py-5 bg-dark">
+        <div class="container px-4"><p class="m-0 text-center text-white">MonitoraVoos</p></div>
+    </footer>
+    <!-- Bootstrap core JS-->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Core theme JS-->
+    <script src="{% static 'js/scripts.js' %}"></script>
+</body>
+</html>

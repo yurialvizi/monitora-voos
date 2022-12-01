@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block title %}Excluir Rota{% endblock title %}
+
+{% block content %}
+
+<header class="bg-primary bg-gradient text-white">
+    <div class="container">
+            <h1>Rotas</h1>
+    </div>
+</header>
+
+    {% comment %} <div class="input-group mb-3">
+        <input type="text" class="form-control" placeholder="Código da rota" aria-label="Recipient's username" aria-describedby="basic-addon2">
+        <div class="input-group-append">
+          <button class="btn btn-outline-secondary" type="button">Buscar rota</button>
+        </div>
+    </div> {% endcomment %}
+    {% for rota in object_list %}
+        <a href="{% url 'confirmar-excluir-rota' rota.id %}">{{ rota.codigo }}</a>
+        <br/>
+    {% endfor %}
+    {% comment %} <ul>
+        {% for rota in object_list %}
+            <li>{{ rota.codigo }}</li>
+        {% endfor %}
+    </ul> {% endcomment %}
+
+
+{% endblock %}

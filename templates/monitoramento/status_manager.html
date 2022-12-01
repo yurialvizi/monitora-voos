@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block title %} Monitoramento {% endblock %}
+
+{% block content %}
+
+
+<header class="bg-primary bg-gradient text-white">
+    <div class="container">
+            <h1>Voo: {{ voo.rota.codigo }}</h1>
+    </div>
+</header>
+
+    <p><strong>Companhia aerea:</strong> {{ voo.rota.companhia_aerea }} </p> 
+    <p><strong>Data:</strong> {{ voo.data }} </p> 
+    <p><strong>Origem:</strong> {{ voo.rota.origem }}</p>
+    <p><strong>Aeroporto de partida:</strong> {{ voo.rota.aeroporto_partida }}</p>
+    <p><strong>Horário de partida:</strong> {{ voo.hora_partida }}</p>
+    <p><strong>Destino:</strong> {{ voo.rota.destino }}</p>
+    <p><strong>Aeroporto de destino:</strong> {{ voo.rota.aeroporto_chegada }}</p>
+    <p><strong>Horário de chegada:</strong> {{ voo.hora_chegada }}</p>
+    <form action="" method="post">
+        {% csrf_token %}
+        {{ form.non_field_errors }}
+        {% if user.groups.all.0.name == "Funcionario" %}
+        <div class="fieldWrapper">
+            {{ form.hora_partida.errors }}
+            <label for="{{ form.hora_partida.id_for_label }}">Atualizar horário de partida:</label>
+            {{ form.hora_partida }}
+        <div class="fieldWrapper">
+            {{ form.hora_chegada.errors }}
+            <label for="{{ form.hora_chegada.id_for_label }}">Atualizar horário de chegada:</label>
+            {{ form.hora_chegada }}
+        </div>
+        {% endif %}
+            {{ form.status.errors }}
+            <label for="{{ form.status.id_for_label }}">Atualizar status:</label>
+            {{ form.status }}
+            <input type="submit" value="Submit" />
+        </div>
+    </form>
+    
+{% endblock %}

@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block title %} Voo {{voo.id}} {% endblock %}
+
+{% block content %}
+    <h1>Voo: {{ voo.codigo }}</h1>
+
+    <p><strong>Rota:</strong> <a href="">{{ voo.rota_id }}</a></p> <!-- author detail link not yet defined -->
+    <p><strong>Status:</strong> {{ voo.status }}</p>
+    <p><strong>Piloto:</strong> {{ voo.piloto }}</p>
+    <p><strong>Horário de partida:</strong> {{ voo.hora_partida }}</p>
+    <p><strong>Horário de chegada:</strong> {{ voo.hora_chegada }}</p>
+    <p><strong>Data:</strong> {{ voo.data }}</p>
+    
+    <!-- Footer-->
+    <footer class="py-5 bg-dark fixed-bottom">
+        <div class="container px-4"><p class="m-0 text-center text-white">MonitoraVoos</p></div>
+    </footer>
+    
+{% endblock %}

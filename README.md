@@ -21,7 +21,7 @@ Yuri de Sene Alvizi       | 11260398
 2. Clone o repositório do grupo. No terminal, digite o comando:
 
 ```
-  git clone https://github.com/vinibalvarenga/MonitoraVoos.git
+  git clone https://github.com/yurialvizi/monitora-voos.git
 ```
 
 3. Crie um ambiente virtual chamado **env** usando:
@@ -33,13 +33,13 @@ Yuri de Sene Alvizi       | 11260398
 4. Ative o ambiente usando o comando:
 
 ```
-  .\env\scripts\Activate.ps1
+  .\env\bin\Activate.ps1
 ```
 
 5. De acordo com o seu diretório, vá até a pasta **MonitoraVoos**:
 
 ```
-  cd MonitoraVoos
+  cd monitora-voos
 ```
 
 6. Instale as dependências:

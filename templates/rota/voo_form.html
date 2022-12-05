@@ -3,9 +3,32 @@
 {% block content %}
   <form action="" method="post">
     {% csrf_token %}
-    <table>
-      {{ form.as_table }}
-    </table>
+    {{ form.non_field_errors }}
+    <div class="fieldWrapper">
+        {{ form.rota.errors }}    
+        <label for="{{ form.rota.id_for_label }}">Rota</label>
+        {{ form.rota }}
+    </div>
+    <div class="fieldWrapper">
+        {{ form.id.errors }}    
+        <label for="{{ form.id.id_for_label }}">Id</label>
+        {{ form.id }}
+    </div>
+    <div class="fieldWrapper">
+        {{ form.Piloto.errors }}    
+        <label for="{{ form.piloto.id_for_label }}">Piloto</label>
+        {{ form.piloto }}
+    </div>
+    <div class="fieldWrapper">
+        {{ form.hora_partida.errors }}    
+        <label for="{{ form.hora_partida.id_for_label }}">Hora partida</label>
+        {{ form.hora_partida }}
+    </div>
+    <div class="fieldWrapper">
+        {{ form.data.errors }}    
+        <label for="{{ form.data.id_for_label }}">Data</label>
+        {{ form.data }}
+    </div>
     <input type="submit" value="Submit" />
   </form>
 

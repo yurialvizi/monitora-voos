@@ -36,10 +36,10 @@ class Voo(models.Model):
     )
     rota = models.ForeignKey(Rota, on_delete=models.CASCADE, null=True)
     id = models.IntegerField(primary_key=True)
-    status = models.CharField(max_length=2, null=True, choices=STATUS_POSSIVEIS)
+    status = models.CharField(max_length=2, null=True, blank=True, choices=STATUS_POSSIVEIS)
     piloto = models.CharField(max_length=20, null=False)
-    hora_partida = models.TimeField(auto_now=False, null=True)
-    hora_chegada = models.TimeField(auto_now=False, null=True)
+    hora_partida = models.TimeField(auto_now=False, null=True, blank=True)
+    hora_chegada = models.TimeField(auto_now=False, null=True, blank=True)
     data = models.DateTimeField(null=True)
     class Meta:
         db_table = 'voos'
@@ -122,7 +122,7 @@ class VooUpdateForm(ModelForm):
         model = Voo    
  
         # Custom fields
-        fields = ['status', 'data', 'hora_partida', 'hora_chegada', 'piloto']
+        fields = ['data', 'status', 'piloto']
 
     # this function will be used for the validation
     def clean(self):
@@ -131,36 +131,31 @@ class VooUpdateForm(ModelForm):
 
         rota = self.instance.rota
 
-        hora_partida = self.cleaned_data.get('hora_partida')
-        hora_chegada = self.cleaned_data.get('hora_chegada')
         status = self.cleaned_data.get('status')
 
         if rota.aeroporto_chegada == 'Guarulhos' and status != 'vo':
             self._errors['hora_chegada'] = self.error_class([
                 'O primeiro status do voo que está chegando deve ser em_voo'])
 
-        if hora_partida > hora_chegada:
-            self._errors['hora_chegada'] = self.error_class([
-                'Hora de chegada deve ser maior que hora de partida'])
 
         return self.cleaned_data
 
-# class VooCreateForm(ModelForm):
-#     class Meta:
-#         model = Voo
-#         fields = ['rota', 'id', 'piloto', 'hora_partida', 'hora_chegada', 'data']
+class VooCreateForm(ModelForm):
+    class Meta:
+        model = Voo
+        fields = ['rota', 'status', 'id', 'piloto', 'hora_partida', 'data']
     
-#     def clean(self):
-#         super(VooCreateForm, self).clean()
+    def clean(self):
+        super(VooCreateForm, self).clean()
 
-#         rota = self.cleaned_data.get('rota')
+        rota = self.cleaned_data.get('rota')
 
-#         if rota.aeroporto_chegada == 'Guarulhos':
-#             print('oi')
-#             self.cleaned_data['status'] = 'em_voo'
-#             print(self.cleaned_data)
+        if rota.aeroporto_chegada == 'Guarulhos':
+            self.cleaned_data['status'] = 'vo'
+        else:
+            self.cleaned_data['hora_partida'] = None
 
-#         return self.cleaned_data
+        return self.cleaned_data
 
 
 
@@ -169,7 +164,7 @@ class VooFuncionarioForm(ModelForm):
     class Meta:
         model = Voo
 
-        fields = ['status', 'hora_partida', 'hora_chegada']
+        fields = ['status']
 
     def clean(self):
 
@@ -180,13 +175,8 @@ class VooFuncionarioForm(ModelForm):
         voo = self.instance
         status_anterior =  self.instance.get_status_display()
         status_novo = self.cleaned_data.get('status')
-        hora_partida = self.cleaned_data.get('hora_partida')
-        hora_chegada = self.cleaned_data.get('hora_chegada')
 
         if voo.rota.aeroporto_partida == 'Guarulhos':
-            if hora_partida > hora_chegada:
-                self._errors['hora_chegada'] = self.error_class(['Hora de chegada deve ser maior que hora de partida'])
-
             if str(status_anterior) not in ['None', 'embarcando']:
                 self._errors['status'] = self.error_class(['Mudança de status não permitida'])
             elif status_anterior == 'None' and status_novo not in primeiro_status:
@@ -202,7 +192,7 @@ class VooTorreForm(ModelForm):
     class Meta:
         model = Voo
 
-        fields = ['status']
+        fields = ['status', 'hora_chegada', 'hora_partida']
 
     def clean(self):
 
@@ -214,6 +204,9 @@ class VooTorreForm(ModelForm):
 
         status_anterior =  self.instance.get_status_display()
         status_novo = self.cleaned_data.get('status')
+        
+        if not self.cleaned_data.get('hora_partida'):
+            self.cleaned_data['hora_partida'] = voo.hora_partida
 
         if voo.rota.aeroporto_partida == 'Guarulhos':
             if status_anterior not in status_iniciais:

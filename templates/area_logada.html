@@ -86,6 +86,8 @@
                 <th scope="col">Aeroporto</th>
                 <th scope="col">Partida Prevista</th>
                 <th scope="col">Partida Real</th>
+                <th scope="col">Chegada Prevista Real</th>
+                <th scope="col">Chegada Real</th>
               </tr>
             </thead>
             <tbody>
@@ -99,6 +101,8 @@
                         <td>{{ voo.rota.aeroporto_chegada }}</td>
                         <td>{{ voo.rota.hora_partida_prevista }}</td>
                         <td>{{ voo.hora_partida }}</td>
+                        <td>{{ voo.rota.hora_chegada_prevista }}</td>
+                        <td>{{ voo.hora_chegada }}</td>
                     </tr>
                 {% endif %}
                 {% endfor %}

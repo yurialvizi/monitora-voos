@@ -6,7 +6,7 @@ from django import forms
 # from django.contrib.auth.decorators import login_required, permission_required
 
 # from rota.forms import CriarRotaForm
-from rota.models import Rota, Voo, RotaForm, RotaUpdateForm, VooFuncionarioForm, VooPilotoForm, VooTorreForm, VooUpdateForm
+from rota.models import Rota, Voo, RotaForm, RotaUpdateForm, VooCreateForm, VooFuncionarioForm, VooPilotoForm, VooTorreForm, VooUpdateForm
 
 # Create your views here.
 def login(request):
@@ -92,39 +92,6 @@ def estatisticas_rota(request):
     return render(request,"geracao_relatorios/estatisticas_rota.html", context)
 
 
-# def voos_companhia(request):
-#     voos = Voo.objects.all()
-
-#     freq = {}
-#     for voo in voos:
-#         if voo.rota.companhia_aerea in freq:
-#             freq[voo.rota.companhia_aerea] += 1
-#         else:
-#             freq[voo.rota.companhia_aerea] = 1
-
-    
-#     context = {
-#         'companhias_aereas': freq,
-#     }
-#     return render(request,"geracao_relatorios/voos_companhia.html", context)
-
-# def voos_destino(request):
-#     voos = Voo.objects.all()
-
-#     freq = {}
-#     for voo in voos:
-#         if voo.rota.destino in freq:
-#             freq[voo.rota.destino] += 1
-#         else:
-#             freq[voo.rota.destino] = 1
-
-    
-#     context = {
-#         'destinos': freq,
-#     }
-#     return render(request,"geracao_relatorios/voos_destino.html", context)
-
-
 
 class MonitoraVoo(UpdateView):
     model = Voo
@@ -173,8 +140,7 @@ class RotaDelete(DeleteView):
 
 class VooCreate(CreateView):
     model = Voo
-    # form_class = VooCreateForm
-    fields = ['rota', 'id', 'piloto', 'hora_partida', 'hora_chegada', 'data']
+    form_class = VooCreateForm
     success_url = reverse_lazy('crud')
 
 class VooUpdateListView(ListView):

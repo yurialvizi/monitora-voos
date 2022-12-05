@@ -5,7 +5,7 @@
 {% block content %}
     <h1>Voo: {{ voo.codigo }}</h1>
 
-    <p><strong>Rota:</strong> <a href="">{{ voo.rota_id }}</a></p> <!-- author detail link not yet defined -->
+    <p><strong>Rota:</strong> {{ voo.rota.codigo }}</p> <!-- author detail link not yet defined -->
     <p><strong>Status:</strong> {{ voo.status }}</p>
     <p><strong>Piloto:</strong> {{ voo.piloto }}</p>
     <p><strong>Horário de partida:</strong> {{ voo.hora_partida }}</p>

@@ -3,14 +3,14 @@
 {% block title %} Voo {{voo.id}} {% endblock %}
 
 {% block content %}
-    <h1>Voo: {{ voo.codigo }}</h1>
+    <h1>Voo: {{ voo.id }}</h1>
 
     <p><strong>Rota:</strong> {{ voo.rota.codigo }}</p> <!-- author detail link not yet defined -->
-    <p><strong>Status:</strong> {{ voo.status }}</p>
+    <p><strong>Status:</strong> {{ voo.get_status_display }}</p>
     <p><strong>Piloto:</strong> {{ voo.piloto }}</p>
     <p><strong>Horário de partida:</strong> {{ voo.hora_partida }}</p>
     <p><strong>Horário de chegada:</strong> {{ voo.hora_chegada }}</p>
-    <p><strong>Data:</strong> {{ voo.data }}</p>
+    <p><strong>Data:</strong> {{ voo.data|date:"d/m/Y" }}</p>
     
     <!-- Footer-->
     <footer class="py-5 bg-dark fixed-bottom">

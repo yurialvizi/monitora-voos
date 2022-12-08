@@ -78,12 +78,15 @@ class RotaForm(ModelForm):
                 'Aeroporto destino deve ser diferente do aeroporto de origem'])
 
         if aeroporto_chegada != "Guarulhos" and aeroporto_partida != "Guarulhos":
-            self._errors['aeroporto_partida', 'aeroporto_chegada'] = self.error_class([
+            self._errors['aeroporto_partida'] = self.error_class([
+                'Origem ou destino deve ser o aeroporto de Guarulhos'
+            ])
+            self._errors['aeroporto_chegada'] = self.error_class([
                 'Origem ou destino deve ser o aeroporto de Guarulhos'
             ])
 
         if origem != "São Paulo" and destino != "São Paulo":
-            self._errors['origem', 'destino'] = self.error_class([
+            self._errors['origem'] = self.error_class([
                 'Origem ou destino deve ser São Paulo'
             ])
             self._errors['destino'] = self.error_class([
@@ -117,28 +120,15 @@ class RotaUpdateForm(ModelForm):
         return self.cleaned_data
 
 class VooUpdateForm(ModelForm):
+
     class Meta:
         # write the name of models for which the form is made
         model = Voo    
  
         # Custom fields
-        fields = ['data', 'status', 'piloto']
+        fields = ['data', 'piloto']
+    
 
-    # this function will be used for the validation
-    def clean(self):
-
-        super(VooUpdateForm, self).clean()
-
-        rota = self.instance.rota
-
-        status = self.cleaned_data.get('status')
-
-        if rota.aeroporto_chegada == 'Guarulhos' and status != 'vo':
-            self._errors['hora_chegada'] = self.error_class([
-                'O primeiro status do voo que está chegando deve ser em_voo'])
-
-
-        return self.cleaned_data
 
 class VooCreateForm(ModelForm):
     class Meta:
@@ -204,25 +194,36 @@ class VooTorreForm(ModelForm):
 
         status_anterior =  self.instance.get_status_display()
         status_novo = self.cleaned_data.get('status')
-        
-        if not self.cleaned_data.get('hora_partida'):
-            self.cleaned_data['hora_partida'] = voo.hora_partida
 
         if voo.rota.aeroporto_partida == 'Guarulhos':
             if status_anterior not in status_iniciais:
                 self._errors['status'] = self.error_class(['Mudança de status não permitida'])
             elif status_anterior == 'pronto' and status_novo != 'ao':
                 self._errors['status'] = self.error_class(['Mudança de status não permitida'])
+            elif status_anterior == 'pronto' and status_novo == 'ao' and not self.cleaned_data.get('hora_partida'):
+                self._errors['hora_partida'] = self.error_class(['Hora de partida é obrigatória'])
+            elif status_anterior == 'pronto' and status_novo == 'ao' and self.cleaned_data.get('hora_partida') < voo.rota.hora_partida_prevista:
+                self._errors['hora_partida'] = self.error_class(['Hora de partida deve ser posterior ao horário de partida previsto'])
             elif status_anterior == 'programado' and status_novo != 'ta':
                 self._errors['status'] = self.error_class(['Mudança de status não permitida'])
             elif status_anterior == 'em_voo' and status_novo != 'at':
                 self._errors['status'] = self.error_class(['Mudança de status não permitida'])
+            elif status_anterior == 'em_voo' and status_novo == 'at' and not self.cleaned_data.get('hora_chegada'):
+                self._errors['hora_chegada'] = self.error_class(['Horário de chegada é obrigatório'])
+            elif status_anterior == 'em_voo' and status_novo == 'at' and self.cleaned_data.get('hora_chegada') < voo.hora_partida:
+                self._errors['hora_chegada'] = self.error_class(['Horário de chegada deve ser posterior ao horário de partida'])
         else:
             if status_anterior != 'em_voo':
                 self._errors['status'] = self.error_class(['Mudança de status não permitida'])
             elif status_anterior == 'em_voo' and status_novo != 'at':
                 self._errors['status'] = self.error_class(['Mudança de status não permitida'])
+            elif status_anterior == 'em_voo' and status_novo == 'at' and not self.cleaned_data.get('hora_chegada'):
+                self._errors['hora_chegada'] = self.error_class(['Horário de chegada é obrigatório'])
+            elif status_anterior == 'em_voo' and status_novo == 'at' and self.cleaned_data.get('hora_chegada') < voo.hora_partida:
+                self._errors['hora_chegada'] = self.error_class(['Horário de chegada deve ser posterior ao horário de partida'])
 
+        if not self.cleaned_data.get('hora_partida'):
+                self.cleaned_data['hora_partida'] = voo.hora_partida
 
         return self.cleaned_data
 

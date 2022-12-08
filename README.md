@@ -1,6 +1,6 @@
 # MonitoraVoos
 
-O seguinte projeto diz respeito ao desenvolvimento de um sistema de monitoramento de voos de aviões.
+O seguinte projeto diz respeito ao desenvolvimento de um sistema de monitoramento de voos de aviões. Para acessar ao site com o projeto "deployado", visite: http://denioalmeida.pythonanywhere.com/ .
 
 ## Grupo 6
 

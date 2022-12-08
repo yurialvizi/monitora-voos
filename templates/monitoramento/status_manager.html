@@ -12,7 +12,7 @@
 </header>
 
     <p><strong>Companhia aerea:</strong> {{ voo.rota.companhia_aerea }} </p> 
-    <p><strong>Data:</strong> {{ voo.data }} </p> 
+    <p><strong>Data:</strong> {{ voo.data|date:"d/m/Y" }} </p> 
     <p><strong>Origem:</strong> {{ voo.rota.origem }}</p>
     <p><strong>Aeroporto de partida:</strong> {{ voo.rota.aeroporto_partida }}</p>
     <p><strong>Destino:</strong> {{ voo.rota.destino }}</p>
@@ -20,13 +20,13 @@
     <form action="" method="post">
         {% csrf_token %}
         {{ form.non_field_errors }}
-        {% if user.groups.all.0.name == "Torre de Controle" and voo.status == "vo" %}
+        {% if user.groups.all.0.name == "Torre de Controle" and voo.status == "vo" or voo.status == "at" %}
             <div class="fieldWrapper">
                 {{ form.hora_chegada.errors }}    
                 <label for="{{ form.status.id_for_label }}">Atualizar horário de chegada:</label>
                 {{ form.hora_chegada }}
             </div>
-        {% elif user.groups.all.0.name == "Torre de Controle" and voo.status == "pt" %}
+        {% elif user.groups.all.0.name == "Torre de Controle" and voo.status == "pt" or voo.status == "ao" %}
             <div class="fieldWrapper">
                 {{ form.hora_partida.errors }}    
                 <label for="{{ form.status.id_for_label }}">Atualizar horário de partida</label>

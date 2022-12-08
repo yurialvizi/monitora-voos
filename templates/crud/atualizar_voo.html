@@ -10,21 +10,36 @@
     </div>
 </header>
 
-    {% comment %} <div class="input-group mb-3">
-        <input type="text" class="form-control" placeholder="Código da voo" aria-label="Recipient's username" aria-describedby="basic-addon2">
-        <div class="input-group-append">
-          <button class="btn btn-outline-secondary" type="button">Buscar voo</button>
-        </div>
-    </div> {% endcomment %}
-    {% for voo in object_list %}
-        <a href="{% url 'voo-update-form' voo.id %}">{{ voo.id }}</a>
-        <br/>
-    {% endfor %}
-    {% comment %} <ul>
-        {% for voo in object_list %}
-            <li>{{ voo.codigo }}</li>
-        {% endfor %}
-    </ul> {% endcomment %}
+<section id="Voos">
+    <div class="container" style="margin-top:25px">
+        <table class="table">
+        <thead>
+          <tr>
+            <th scope="col">Voo</th>
+            <th scope="col">Rota</th>
+            <th scope="col">Data</th>
+            <th scope="col">Companhia aérea</th>
+            <th scope="col">Origem</th>
+            <th scope="col">Destino</th>
+            <th scope="col">Status</th>
+          </tr>
+        </thead>
+        <tbody>
+            {% for voo in object_list %}
+                <tr>
+                    <td><a href="{% url 'voo-update-form' voo.id %}">{{ voo.id }}</a></td>
+                    <td><a href="{% url 'rota-detail' voo.rota.id %}">{{ voo.rota.codigo }}</td>
+                    <td>{{ voo.data|date:"d/m/Y" }}</td>
+                    <td>{{ voo.rota.companhia_aerea }}</td>
+                    <td>{{ voo.rota.aeroporto_partida }}</td>
+                    <td>{{ voo.rota.aeroporto_chegada }}</td>
+                    <td>{{ voo.get_status_display }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+      </table>
+    </div>
+</section>
 
 
 {% endblock %}

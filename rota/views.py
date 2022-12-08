@@ -3,7 +3,8 @@ from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.views.generic import ListView, DetailView
 from django.urls import reverse_lazy
 from django import forms
-# from django.contrib.auth.decorators import login_required, permission_required
+from django.contrib.auth.decorators import login_required, permission_required
+from django.contrib.auth.mixins import PermissionRequiredMixin
 
 # from rota.forms import CriarRotaForm
 from rota.models import Rota, Voo, RotaForm, RotaUpdateForm, VooCreateForm, VooFuncionarioForm, VooPilotoForm, VooTorreForm, VooUpdateForm
@@ -19,12 +20,18 @@ def area_logada(request):
     }
     return render(request,"area_logada.html", context)
 
+@login_required
+@permission_required('rota.add_rota', raise_exception=True)
 def crud(request):
     return render(request,"crud.html")
 
+@login_required
+@permission_required('rota.view_rota')
 def geracao_relatorios(request):
     return render(request,"geracao_relatorios.html")
 
+@login_required
+@permission_required('rota.change_voo', raise_exception=True)
 def monitoramento(request):
     voos = Voo.objects.all()
     context = {
@@ -32,7 +39,8 @@ def monitoramento(request):
     }
     return render(request,"monitoramento.html", context)
 
-
+@login_required
+@permission_required('rota.view_rota')
 def estatisticas_voo(request):
     voos = Voo.objects.all()
  
@@ -57,16 +65,25 @@ def estatisticas_voo(request):
     }
     return render(request,"geracao_relatorios/estatisticas_voo.html", context)
  
+@login_required
+@permission_required('rota.view_rota')
 def estatisticas_rota(request):
     voos = Voo.objects.all()
  
-    freq = {}
+    freq_partida = {}
+    freq_chegada = {}
 
     for voo in voos:
-        if voo.rota.destino in freq:
-            freq[voo.rota.destino] += 1
+        if voo.rota.destino in freq_partida:
+            freq_partida[voo.rota.destino] += 1
         else:
-            freq[voo.rota.destino] = 1
+            freq_partida[voo.rota.destino] = 1
+
+    for voo in voos:
+        if voo.rota.origem in freq_chegada:
+            freq_chegada[voo.rota.origem] += 1
+        else:
+            freq_chegada[voo.rota.origem] = 1
  
     aeronaves = {}
  
@@ -83,9 +100,13 @@ def estatisticas_rota(request):
             companhia[voo.rota.companhia_aerea] += 1
         else:
             companhia[voo.rota.companhia_aerea] = 1
+
+    freq_partida.pop('São Paulo')
+    freq_chegada.pop('São Paulo')
  
     context = {
-        'destinos': freq,
+        'destinos': freq_partida,
+        'origens': freq_chegada,
         'aeronaves': aeronaves,
         'companhia': companhia
     }
@@ -93,7 +114,8 @@ def estatisticas_rota(request):
 
 
 
-class MonitoraVoo(UpdateView):
+class MonitoraVoo(PermissionRequiredMixin, UpdateView):
+    permission_required = 'rota.change_voo'
     model = Voo
     template_name = 'monitoramento/status_manager.html'
     success_url = reverse_lazy('monitoramento')
@@ -107,63 +129,78 @@ class MonitoraVoo(UpdateView):
             return VooFuncionarioForm
 
 
-class RotaCreate(CreateView):
+class RotaCreate(PermissionRequiredMixin, CreateView):
+    permission_required = 'rota.add_rota'
     model = Rota
     form_class = RotaForm
     success_url = reverse_lazy('crud')
 
-class RotaUpdateListView(ListView):
+class RotaUpdateListView(PermissionRequiredMixin, ListView):
+    permission_required = 'rota.add_rota'
     model = Rota
     template_name = 'crud/atualizar_rota.html'
 
-class RotaUpdate(UpdateView):
+class RotaUpdate(PermissionRequiredMixin, UpdateView):
+    permission_required = 'rota.add_rota'
     model = Rota
     form_class= RotaUpdateForm
     success_url = reverse_lazy('crud')
 
-class RotaListView(ListView):
+class RotaListView(PermissionRequiredMixin, ListView):
+    permission_required = 'rota.add_rota'
     model = Rota
 
-class RotaDetailView(DetailView):
+class RotaDetailView(PermissionRequiredMixin, DetailView):
+    permission_required = 'rota.add_rota'
     model = Rota
     template_name = 'crud/consultar_rotas/rota_detail.html'
 
-class RotaDeleteListView(ListView):
+class RotaDeleteListView(PermissionRequiredMixin, ListView):
+    permission_required = 'rota.add_rota'
     model = Rota
     template_name = 'crud/excluir_rota.html'
 
-class RotaDelete(DeleteView):
+class RotaDelete(PermissionRequiredMixin, DeleteView):
+    permission_required = 'rota.add_rota'
     model = Rota
     template_name = 'crud/excluir_rota/confirmar_excluir_rota.html'
     success_url = reverse_lazy('crud')
 
 
-class VooCreate(CreateView):
+class VooCreate(PermissionRequiredMixin, CreateView):
+    permission_required = 'rota.add_rota'
     model = Voo
     form_class = VooCreateForm
     success_url = reverse_lazy('crud')
 
-class VooUpdateListView(ListView):
+class VooUpdateListView(PermissionRequiredMixin, ListView):
+    permission_required = 'rota.add_rota'
     model = Voo
     template_name = 'crud/atualizar_voo.html'
 
-class VooUpdate(UpdateView):
+class VooUpdate(PermissionRequiredMixin, UpdateView):
+    permission_required = 'rota.add_rota'
     model = Voo
     form_class = VooUpdateForm
+    template_name = 'crud/atualizar_voo/update_form.html'
     success_url = reverse_lazy('crud')
 
-class VooListView(ListView):
+class VooListView(PermissionRequiredMixin, ListView):
+    permission_required = 'rota.add_rota'
     model = Voo
 
-class VooDetailView(DetailView):
+class VooDetailView(PermissionRequiredMixin, DetailView):
+    permission_required = 'rota.add_rota'
     model = Voo
     template_name = 'crud/consultar_voos/voo_detail.html'
 
-class VooDeleteListView(ListView):
+class VooDeleteListView(PermissionRequiredMixin, ListView):
+    permission_required = 'rota.add_rota'
     model = Voo
     template_name = 'crud/excluir_voo.html'
 
-class VooDelete(DeleteView):
+class VooDelete(PermissionRequiredMixin, DeleteView):
+    permission_required = 'rota.add_rota'
     model = Voo
     template_name = 'crud/excluir_voo/confirmar_excluir_voo.html'
     success_url = reverse_lazy('crud')

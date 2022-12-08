@@ -5,7 +5,7 @@
 {% block content %}
     <h1>Rota: {{ rota.codigo }}</h1>
 
-    <p><strong>Companhia aerea:</strong> <a href="">{{ rota.companhia_aerea }}</a></p> <!-- author detail link not yet defined -->
+    <p><strong>Companhia aerea:</strong> {{ rota.companhia_aerea }}</p> <!-- author detail link not yet defined -->
     <p><strong>Origem:</strong> {{ rota.origem }}</p>
     <p><strong>Aeroporto de partida:</strong> {{ rota.aeroporto_partida }}</p>
     <p><strong>Horário de partida:</strong> {{ rota.hora_partida_prevista }}</p>

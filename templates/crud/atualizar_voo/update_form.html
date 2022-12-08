@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <form action="" method="post">
+    {% csrf_token %}
+    {{ form.non_field_errors }}
+    <div class="fieldWrapper">
+        {{ form.piloto.errors }}    
+        <label for="{{ form.piloto.id_for_label }}">Piloto</label>
+        {{ form.piloto }}
+    </div>
+    <div class="fieldWrapper">
+        {{ form.data.errors }}    
+        <label for="{{ form.data.id_for_label }}">Data</label>
+        <input name='data' value=''/>
+    </div>
+    <input type="submit" value="Submit" />
+  </form>
+
+  <!-- Footer-->
+<footer class="py-5 bg-dark fixed-bottom">
+  <div class="container px-4"><p class="m-0 text-center text-white">MonitoraVoos</p></div>
+</footer>
+{% endblock %}

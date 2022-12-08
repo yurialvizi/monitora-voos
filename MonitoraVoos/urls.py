@@ -22,7 +22,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include("django.contrib.auth.urls")),
     path('', views.area_logada, name='home'),
-    path('crud/', TemplateView.as_view(template_name='crud.html'), name='crud'),
+    path('crud/', views.crud, name='crud'),
     path('crud/criar-rota', views.RotaCreate.as_view(), name='criar-rota'),
     path('crud/consultar-rotas', views.RotaListView.as_view(), name='consultar-rota'),
     path('crud/consultar-rotas/<int:pk>', views.RotaDetailView.as_view(), name='rota-detail'),
@@ -40,8 +40,6 @@ urlpatterns = [
     path('monitoramento/', views.monitoramento, name='monitoramento'),
     path('monitoramento/<pk>', views.MonitoraVoo.as_view(), name='status-manager'),
     path('geracao-relatorios/', views.geracao_relatorios),
-    # path('geracao-relatorios/voos-companhia', views.voos_companhia, name='relatorio-voos-companhia'),
-    # path('geracao-relatorios/voos-destino', views.voos_destino, name='relatorio-voos-destino')
     path('geracao-relatorios/estatisticas-voos', views.estatisticas_voo, name='relatorio-voos'),
     path('geracao-relatorios/estatisticas-rotas', views.estatisticas_rota, name='relatorio-rotas')
 ]
